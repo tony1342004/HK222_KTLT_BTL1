@@ -253,6 +253,8 @@ void asclepius(string &asclepius_pack, int &remedy, int &maidenkiss, int &phoeni
                 i++;
             }
             k = "";
+            if (i == r1 - 1)
+                break;
         }
         t++;
     }
