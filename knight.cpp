@@ -253,7 +253,7 @@ void asclepius(string &asclepius_pack, int &remedy, int &maidenkiss, int &phoeni
                 i++;
             }
             k = "";
-            if (i == r1 - 1)
+            if (i == r1 - 1 && m == c1 - 1)
                 break;
         }
         t++;
@@ -427,7 +427,7 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
         if (level > levelO || HP == 999 || snt(HP) == 1)
         {
             level += 2;
-            level > 10 ? 10 : level;
+            level = level > 10 ? 10 : level;
         }
         else
         {
@@ -451,9 +451,9 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
         if (level > levelO || HP == 999 || snt(HP) == 1)
         {
             level += 2;
-            level > 10 ? 10 : level;
+            level = level > 10 ? 10 : level;
         }
-        else
+        else if (level < levelO)
         {
             if (c7 == 0)
                 c7++;
@@ -471,7 +471,9 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
     case 11:
         n1 = ((level + phoenixdown) % 5 + 1) * 3;
         s1 = 99 * n1 - (n1 - 1) * n1;
+        cout << "s1: " << s1 << endl;
         HP += (s1 % 100);
+        cout << "HP: " << HP << endl;
         int pn;
         pn = HP;
         while (a11 == 0 && pn < 999)
@@ -480,7 +482,7 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
             a11 = snt(pn);
         }
         HP = pn;
-        HP > MaxHP ? MaxHP : HP;
+        HP = (HP > MaxHP) ? MaxHP : HP;
         break;
     case 12:
         while (HP > 1)
@@ -497,15 +499,15 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
         break;
     case 15:
         remedy++;
-        remedy > 99 ? 99 : remedy;
+        remedy = remedy > 99 ? 99 : remedy;
         break;
     case 16:
         maidenkiss++;
-        maidenkiss > 99 ? 99 : maidenkiss;
+        maidenkiss = maidenkiss > 99 ? 99 : maidenkiss;
         break;
     case 17:
         phoenixdown++;
-        phoenixdown > 99 ? 99 : phoenixdown;
+        phoenixdown = phoenixdown > 99 ? 99 : phoenixdown;
         break;
     case 18:
         if (count18 == 0)
@@ -588,12 +590,12 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
                 case 1:
                     for (int i = 0; i < n2; i++)
                     {
-                        if (mg[i] > max1)
+                        if (mg[i] >= max1)
                         {
                             max1 = mg[i];
                             maxi = i;
                         }
-                        else if (mg[i] < min1)
+                        else if (mg[i] <= min1)
                         {
                             min1 = mg[i];
                             mini = i;
@@ -654,7 +656,7 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
                     {
                         if (mg_3[i] > max3)
                             max3 = mg_3[i];
-                        else if (mg[i] < min3)
+                        else if (mg_3[i] < min3)
                             min3 = mg_3[i];
                     }
                     for (int i = 0; i < n2; i++)
