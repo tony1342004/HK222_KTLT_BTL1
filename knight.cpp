@@ -294,14 +294,14 @@ void merlin(string &merlin_pack, int &HP, int &MaxHP)
     int i = 0;
     int n9 = 0;
     int k = 0;
-    string line;
-    string process;
     int nm = 0;
     int ne = 0;
     int nr = 0;
     int nl = 0;
     int ni = 0;
     int nn = 0;
+    string line;
+    string process;
     int nmerlin = 0;
     while (ifs.get(inp))
         line += inp;
@@ -315,23 +315,29 @@ void merlin(string &merlin_pack, int &HP, int &MaxHP)
         }
         else if (line[i] == '\n')
         {
+            nm = 0;
+            ne = 0;
+            nr = 0;
+            nl = 0;
+            ni = 0;
+            nn = 0;
             string inp1;
             for (int j = 0; j < process.length(); j++)
             {
                 inp1 += process[j];
                 if (process[j] == 'M' || process[j] == 'm')
                     nm++;
-                else if (process[j] == 'E' || process[j] == 'e')
+                if (process[j] == 'E' || process[j] == 'e')
                     ne++;
-                else if (process[j] == 'R' || process[j] == 'r')
+                if (process[j] == 'R' || process[j] == 'r')
                     nr++;
-                else if (process[j] == 'L' || process[j] == 'l')
+                if (process[j] == 'L' || process[j] == 'l')
                     nl++;
-                else if (process[j] == 'I' || process[j] == 'i')
+                if (process[j] == 'I' || process[j] == 'i')
                     ni++;
-                else if (process[j] == 'N' || process[j] == 'n')
+                if (process[j] == 'N' || process[j] == 'n')
                     nn++;
-                else if (inp1 == "Merlin" || inp1 == "merlin")
+                if (inp1 == "Merlin" || inp1 == "merlin")
                 {
                     nmerlin++;
                     inp1 = "";
@@ -353,7 +359,7 @@ void merlin(string &merlin_pack, int &HP, int &MaxHP)
                     }
                 }
             }
-            line = "";
+            process = "";
         }
         i++;
     }
@@ -429,7 +435,7 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
             level += 2;
             level = level > 10 ? 10 : level;
         }
-        else
+        else if (level < levelO)
         {
             if (c6 == 0)
                 c6++;
@@ -443,8 +449,6 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
                 HP *= 5;
                 remedy--;
             }
-            if ((c6 > 1 && c6 <= 4) || (c7 > 1 && c7 <= 4))
-                HP *= 5;
         }
         break;
     case 7:
@@ -457,23 +461,19 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
         {
             if (c7 == 0)
                 c7++;
-            level--;
+            level = 1;
             if (maidenkiss >= 1)
             {
                 c7 = 0;
                 level = orglevel;
                 maidenkiss--;
             }
-            if ((c6 > 1 && c6 <= 4) || (c7 > 1 && c7 <= 4))
-                level = orglevel;
         }
         break;
     case 11:
         n1 = ((level + phoenixdown) % 5 + 1) * 3;
         s1 = 99 * n1 - (n1 - 1) * n1;
-        cout << "s1: " << s1 << endl;
         HP += (s1 % 100);
-        cout << "HP: " << HP << endl;
         int pn;
         pn = HP;
         while (a11 == 0 && pn < 999)
@@ -530,7 +530,6 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
             level = 10;
         break;
     default:
-        // coi lai xu ly event 13
         if (event > 130)
         {
             int n2;
@@ -539,8 +538,8 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
             int m = 0;
             mushghost(mush_ghost, n2, mg_line2);
             int r = 0;
-            int tf1 = 0;
-            int tf2 = 0;
+            int tf1 = 1;
+            int tf2 = 1;
             int tf;
             int maxi = 0;
             int mini = 0;
@@ -581,6 +580,7 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
             }
             int max1 = mg[0];
             int min1 = mg[0];
+            int k22;
             for (int d = c13 - 1; d >= 0; d--)
             {
                 if (HP > MaxHP)
@@ -602,41 +602,49 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
                         }
                     }
                     HP = HP - (maxi + mini);
+                    HP = HP > MaxHP ? MaxHP : HP;
                     break;
 
                 case 2:
+                    k22 = 0;
                     int max2, imax;
                     max2 = mg[0];
                     for (int i = 0; i < n2; i++)
+                    {
                         if (mg[i] > max2)
                         {
-                            max2 = mg[i];
                             imax = i;
+                            max2 = mg[i];
                         }
-                    for (int i = 0; i < n2; i++)
-                    {
-                        if (i < imax)
+                        else if (mg[i] == max2 && k22 == 0)
                         {
-                            if (mg[i - 1] < mg[i])
-                                tf1 = 1;
-                            else
-                                tf1 = 0;
+                            imax = i;
+                            k22++;
                         }
-                        else if (i > imax)
-                        {
-                            if (mg[i - 1] > mg[i])
-                                tf2 = 1;
-                            else
-                                tf2 = 0;
-                        }
-                        if (imax == n2 - 1)
-                            tf2 = 1;
-                        if (imax == 0)
-                            tf1 = 1;
                     }
-                    tf = tf1 * tf2;
+                    for (int i = 0; i < n2 - 1; i++)
+                    {
+                        if (mg[i] == mg[i + 1])
+                            tf = 0;
+                        else
+                        {
+                            if (i < imax)
+                            {
+                                if (mg[i] >= mg[i + 1])
+                                    tf1 = 0;
+                            }
+                            else if (i > imax)
+                            {
+                                if (mg[i] <= mg[i + 1])
+                                    tf2 = 0;
+                            }
+                            tf = tf1 * tf2;
+                        }
+                        if (tf == 0)
+                            break;
+                    }
                     int mtx, mti;
-                    if (tf != 1)
+                    if (tf == 0)
                     {
                         mtx = -2;
                         mti = -3;
@@ -647,6 +655,7 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
                         mti = imax;
                     }
                     HP = HP - (mtx + mti);
+                    HP = HP > MaxHP ? MaxHP : HP;
                     break;
                 case 3:
                     int max3, min3;
@@ -676,6 +685,7 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
                         }
                     }
                     HP = HP - (maxi2 + mini2);
+                    HP = HP > MaxHP ? MaxHP : HP;
                     break;
                 case 4:
                     int firstmax, secondmax;
@@ -684,7 +694,7 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
                         max2_3x = -5;
                         max2_3i = -7;
                     }
-                    if (mg_3[0] > mg_3[1])
+                    else if (mg_3[0] > mg_3[1])
                     {
                         firstmax = mg_3[0];
                         secondmax = mg_3[1];
@@ -694,29 +704,39 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
                         firstmax = mg_3[1];
                         secondmax = mg_3[0];
                     }
-                    for (int i = 0; i < 3; i++)
+                    if (firstmax != secondmax)
                     {
-                        if (mg_3[i] > firstmax)
+                        for (int i = 0; i < 3; i++)
                         {
-                            secondmax = firstmax;
-                            firstmax = mg_3[i];
+                            if (mg_3[i] > firstmax)
+                            {
+                                secondmax = firstmax;
+                                firstmax = mg_3[i];
+                            }
+                            else if (mg_3[i] > secondmax && mg_3[i] < firstmax)
+                                secondmax = mg_3[i];
                         }
-                        else if (mg_3[i] > secondmax && mg_3[i] < firstmax)
-                            secondmax = mg_3[i];
-                    }
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (mg_3[i] == secondmax)
+                        for (int i = 0; i < 3; i++)
                         {
-                            max2_3x = secondmax;
-                            max2_3i = i;
-                            break;
+                            if (mg_3[i] == secondmax)
+                            {
+                                max2_3x = secondmax;
+                                max2_3i = i;
+                                break;
+                            }
                         }
                     }
                     HP = HP - (max2_3x + max2_3i);
+                    HP = HP > MaxHP ? MaxHP : HP;
                     break;
                 default:
                     break;
+                }
+                if (HP < 0)
+                {
+                    rescue = 0;
+                    display(HP, level, remedy, maidenkiss, phoenixdown, rescue);
+                    exit(0);
                 }
             }
         }
@@ -787,6 +807,8 @@ void adventureToKoopa(string file_input, int &HP, int &level, int &remedy, int &
         }
         if (count == k && HP >= 1)
             rescue = 1;
+        if (arr[k - 1] == 6)
+            HP = MaxHP;
         display(HP, level, remedy, maidenkiss, phoenixdown, rescue);
         if (rescue == 0 || rescue == 1)
             return;
