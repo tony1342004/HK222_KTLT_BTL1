@@ -732,11 +732,16 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
                 default:
                     break;
                 }
-                if (HP < 0)
+                if (HP < 0 && phoenixdown==0)
                 {
                     rescue = 0;
                     display(HP, level, remedy, maidenkiss, phoenixdown, rescue);
                     exit(0);
+                }
+                else if (phoenixdown>0)
+                {
+                    phoenixdown--;
+                    HP = MaxHP;
                 }
             }
         }
