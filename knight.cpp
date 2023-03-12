@@ -1,5 +1,13 @@
 #include "knight.h"
 // dang cho HP chay tu 1 toi 999, nho hon 1 la chet
+int stoi2(string str){
+   stringstream ss; 
+   int num;
+   ss << str;
+   ss >> num;
+   return num; 
+}
+
 void display(int HP, int level, int remedy, int maidenkiss, int phoenixdown, int rescue)
 {
     if (level > 10)
@@ -231,8 +239,8 @@ void asclepius(string &asclepius_pack, int &remedy, int &maidenkiss, int &phoeni
     int c1 = 0;
     int count = 0;
     string k;
-    r1 = stoi(ap_line1);
-    c1 = stoi(ap_line2);
+    r1 = stoi2(ap_line1);
+    c1 = stoi2(ap_line2);
     int k2;
     int arr_ap[100][100];
     int i = 0;
@@ -244,7 +252,7 @@ void asclepius(string &asclepius_pack, int &remedy, int &maidenkiss, int &phoeni
         k += ap_line3[t];
         if (ap_line3[t] == ' ' || ap_line3[t] == '\n')
         {
-            arr_ap[i][m] = stoi(k);
+            arr_ap[i][m] = stoi2(k);
             if (m < c1 - 1)
                 m++;
             else if (m == c1 - 1 && i < r1 - 1)
@@ -252,9 +260,9 @@ void asclepius(string &asclepius_pack, int &remedy, int &maidenkiss, int &phoeni
                 m = 0;
                 i++;
             }
-            k = "";
-            if (i == r1 - 1 && m == c1 - 1)
+            if (i == r1 - 1 && m > c1 - 1)
                 break;
+            k = "";
         }
         t++;
     }
@@ -310,7 +318,7 @@ void merlin(string &merlin_pack, int &HP, int &MaxHP)
         process += line[i];
         if (line[i] == '\n' && k == 0)
         {
-            n9 = stoi(process);
+            n9 = stoi2(process);
             k++;
         }
         else if (line[i] == '\n')
@@ -517,11 +525,12 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
         }
         break;
     case 19:
-        if (count19 == 0)
+        while (count19 == 0)
         {
             asclepius(asclepius_pack, remedy, maidenkiss, phoenixdown);
             count19++;
         }
+        cout<<count19<<endl;
         break;
     case 99:
         if ((snt(HP) == 0 && HP < 999 && level < 10) || ((snt(HP) == 1 || HP == 999) && level < 8))
@@ -553,7 +562,7 @@ void damageperevent(int &event, float &baseDamage, int &levelO, int &level, int 
                     mush += mg_line2[r];
                 if (mg_line2[r] == ',')
                 {
-                    mg[m] = stoi(mush);
+                    mg[m] = stoi2(mush);
                     mush = "";
                     m++;
                 }
@@ -787,7 +796,7 @@ void adventureToKoopa(string file_input, int &HP, int &level, int &remedy, int &
             return;
         }
         damageperevent(event, baseDamage, levelO, level, HP, damage, remedy, maidenkiss, phoenixdown, orglevel, MaxHP, h, c6, c7, mush_ghost, line2, asclepius_pack, merlin_pack, rescue);
-        if (c6 == 4)
+        if (c6 == 4 && HP>1)
         {
             HP *= 5;
             c6 = 0;
@@ -815,8 +824,6 @@ void adventureToKoopa(string file_input, int &HP, int &level, int &remedy, int &
         }
         if (count == k && HP >= 1)
             rescue = 1;
-        if (arr[k - 1] == 6)
-            HP = MaxHP;
         display(HP, level, remedy, maidenkiss, phoenixdown, rescue);
         if (rescue == 0 || rescue == 1)
             return;
